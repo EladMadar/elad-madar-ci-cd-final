@@ -39,9 +39,12 @@
 
   - name: build docker image
     ansible.builtin.shell: |
-      cd /home/ec2-user/app/src/Devops-CICD-Udi-Center-app && docker build -t testapp:v1 .
+      cd /home/ec2-user/app/src/nyan-cat && docker build -t eladmadar/eladmadardocker:nyan .
 
   - name: run docker image
     ansible.builtin.shell: |
-      sudo docker run --user root -p 8080:80 testapp:v1
+      sudo docker run --user root -p 8080:8080 eladmadar/eladmadardocker:nyan
 
+  - name: push image to dockerhub
+    ansible.builtin.shell: |
+      sudo docker push eladmadar/eladmadardocker:nyan
