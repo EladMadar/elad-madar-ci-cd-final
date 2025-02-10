@@ -1,0 +1,6 @@
+FROM node:lts-alpine
+WORKDIR /home/ec2-user/app
+COPY . .
+RUN yarn install --production
+CMD ["node"]
+EXPOSE 8080
