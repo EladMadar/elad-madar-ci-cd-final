@@ -1,0 +1,47 @@
+---
+- name: setup webserver
+  hosts: all
+  become: true
+
+  tasks:
+  - name: install git
+    ansible.builtin.yum:
+      name: 
+      - git
+      - python-pip
+      - yum-utils
+      state: present
+
+  - name: add docker-ce repo
+    ansible.builtin.shell: |
+      yum-config-manager --add-re https://download.docker.com/linux/centos/docker-ce.repo
+
+  - name: install docker
+    ansible.builtin.yum:
+      name:
+      - docker
+#      - docker-ce-cli
+#      - containerd.io
+#      - docker-compose-plugin
+      state: present
+
+  - name: start docker service
+    ansible.builtin.service:
+      name: docker
+      state: started
+
+  - name: clone git repo
+    ansible.builtin.git:
+      repo: https://github.com/EladMadar/elad-madar-ci-cd-final.git
+      dest: /home/ec2-user/app
+      clone: yes
+      update: yes
+
+  - name: build docker image
+    ansible.builtin.shell: |
+      cd /home/ec2-user/app/src/Devops-CICD-Udi-Center-app && docker build -t testapp:v1 .
+
+  - name: run docker image
+    ansible.builtin.shell: |
+      sudo docker run --user root -p 8080:80 testapp:v1
+
